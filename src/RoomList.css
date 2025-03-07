@@ -1,0 +1,281 @@
+﻿/* RoomList.css - Luxury Glass Morphism */
+:root {
+    /* Luxury glass color palette */
+    --glass-bg: rgba(15, 15, 15, 0.35);
+   /* --glass-border: rgba(201, 168, 124, 0.2);*/
+    --glass-shadow: rgba(0, 0, 0, 0.25);
+/*    --glass-highlight: rgba(201, 168, 124, 0.15);*/
+    --luxury-accent: #b0b0b0; /* Silver/Gray accent */
+    --luxury-accent-dark: #8a8a8a;
+    --text-color: rgba(255, 255, 255, 0.95);
+    --secondary-text: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(176, 176, 176, 0.2); /* Đổi từ rgba(201, 168, 124, 0.2) */
+    --glass-highlight: rgba(176, 176, 176, 0.15); /* Đổi từ rgba(201, 168, 124, 0.15) */
+}
+
+/* Main container with elegant dark background */
+.glass-room-container {
+    min-height: 100vh;
+    width: 100%;
+    padding: 3rem;
+   /* background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #0f0f0f);*/
+    background-size: 200% 200%;
+    animation: subtleGradient 40s ease infinite;
+}
+
+@keyframes subtleGradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Main room list grid */
+.glass-room-list {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Luxury glass card effect */
+.glass-room-card {
+    border-radius: 12px;
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 10px 30px var(--glass-shadow);
+    overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    position: relative;
+}
+
+    .glass-room-card::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0%;
+        height: 1px;
+        background: var(--luxury-accent);
+        transition: width 0.5s ease;
+    }
+
+    .glass-room-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, var(--glass-highlight), transparent);
+        transition: 0.6s;
+        z-index: 1;
+    }
+
+    .glass-room-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        border-color: var(--luxury-accent);
+    }
+
+        .glass-room-card:hover::before {
+            left: 100%;
+        }
+
+        .glass-room-card:hover::after {
+            width: 100%;
+        }
+
+/* Room content */
+.glass-room-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    position: relative;
+    z-index: 2;
+}
+
+/* Thumbnail container */
+.glass-room-thumbnail {
+    position: relative;
+    width: 100%;
+    padding-top: 56.25%; /* 16:9 aspect ratio */
+    overflow: hidden;
+}
+
+.glass-thumbnail-img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.8s ease;
+    filter: brightness(0.95) contrast(1.05);
+}
+
+.glass-room-card:hover .glass-thumbnail-img {
+    transform: scale(1.05);
+}
+
+/* Play button overlay */
+.glass-play-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    width: 56px;
+    height: 56px;
+    background: rgba(15, 15, 15, 0.6);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    border: 1px solid var(--luxury-accent);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: all 0.4s ease;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+}
+
+    .glass-play-icon svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--luxury-accent);
+    }
+
+.glass-room-card:hover .glass-play-icon {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+/* Room details */
+.glass-room-details {
+    padding: 1.8rem;
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+}
+
+.glass-video-title {
+    font-size: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text-color);
+    margin: 0 0 1rem 0;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.6;
+}
+
+.glass-room-name {
+    font-size: 0.85rem;
+    color: var(--luxury-accent);
+    font-weight: 400;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.7rem;
+    text-transform: uppercase;
+}
+
+.glass-room-status {
+    font-size: 0.8rem;
+    color: var(--secondary-text);
+    display: flex;
+    align-items: center;
+    margin-top: auto;
+}
+
+    .glass-room-status::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        margin-right: 8px;
+        background-color: var(--luxury-accent);
+        box-shadow: 0 0 8px var(--luxury-accent);
+        animation: subtlePulse 3s infinite;
+    }
+
+@keyframes subtlePulse {
+    0% {
+        opacity: 0.7;
+    }
+
+    50% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0.7;
+    }
+}
+
+/* Error message */
+.glass-error-message {
+    background: var(--glass-bg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    color: var(--text-color);
+    text-align: center;
+    max-width: 400px;
+    margin: 2.5rem auto;
+    box-shadow: 0 8px 30px var(--glass-shadow);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .glass-room-container {
+        padding: 1.5rem;
+    }
+
+    .glass-room-list {
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .glass-room-details {
+        padding: 1.5rem;
+    }
+
+    .glass-video-title {
+        font-size: 0.95rem;
+    }
+}
+
+/* Elegant scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(15, 15, 15, 0.5);
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(201, 168, 124, 0.3);
+    border-radius: 10px;
+    border: 1px solid var(--glass-border);
+}
+
+    ::-webkit-scrollbar-thumb:hover {
+        background: var(--luxury-accent);
+    }

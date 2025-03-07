@@ -1,0 +1,215 @@
+/* VideoPlayer.css */
+.video-player-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    overflow: hidden;
+    user-select: none;
+}
+
+.video-wrapper {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* Ensure the video is properly centered */
+.react-player {
+    background: transparent !important;
+}
+
+    .react-player video {
+        object-fit: contain !important;
+    }
+
+/* Custom YouTube-like controls */
+.custom-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 0;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 100;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0) 100%);
+}
+
+    .custom-controls.visible {
+        opacity: 1;
+    }
+
+/* Progress bar container */
+.progress-bar-container {
+    width: 100%;
+    padding: 0;
+    cursor: pointer;
+}
+
+/* Progress bar styling */
+.progress-bar {
+    position: relative;
+    width: 100%;
+    height: 3px;
+    background-color: rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    transition: height 0.1s ease;
+}
+
+    .progress-bar:hover {
+        height: 5px;
+    }
+
+.progress-bar-background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.progress-bar-filled {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    background-color: #ff0000;
+    transition: width 0.1s linear;
+}
+
+.progress-bar-input {
+    position: absolute;
+    top: -5px;
+    left: 0;
+    width: 100%;
+    height: 15px;
+    -webkit-appearance: none;
+    background: transparent;
+    cursor: pointer;
+    opacity: 0;
+}
+
+    .progress-bar-input::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 15px;
+        height: 15px;
+        border-radius: 50%;
+        background: transparent;
+        cursor: pointer;
+    }
+
+/* Controls bottom bar */
+.controls-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 12px;
+    color: white;
+}
+
+.controls-left, .controls-right {
+    display: flex;
+    align-items: center;
+}
+
+/* Control buttons */
+.control-button {
+    background: transparent;
+    border: none;
+    color: white;
+    cursor: pointer;
+    margin: 0 8px 0 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+}
+
+    .control-button:hover {
+        opacity: 0.7;
+    }
+
+    .control-button svg {
+        width: 24px;
+        height: 24px;
+    }
+
+/* Volume slider */
+.volume-slider-container {
+    width: 80px;
+    margin: 0 12px 0 0;
+}
+
+.volume-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    outline: none;
+}
+
+    .volume-slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: white;
+        cursor: pointer;
+    }
+
+/* Time display */
+.time-display {
+    font-size: 13px;
+    color: white;
+    margin-right: 16px;
+    font-family: Arial, sans-serif;
+    min-width: 100px;
+}
+
+/* Button hover effects */
+.control-button:hover svg {
+    transform: scale(1.1);
+}
+
+/* Fullscreen styles */
+.video-player-container:fullscreen {
+    background: black;
+}
+
+    .video-player-container:fullscreen .custom-controls {
+        padding-bottom: 20px;
+    }
+
+/* Video background effect (to be used with VideoBackgroundEffect) */
+.video-background-effect {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    filter: blur(30px) brightness(0.5);
+    transform: scale(1.1);
+    pointer-events: none;
+}
+
+@media (max-width: 768px) {
+    .volume-slider-container {
+        display: none;
+    }
+
+    .time-display {
+        font-size: 12px;
+        min-width: 80px;
+    }
+
+    .control-button {
+        width: 32px;
+        height: 32px;
+    }
+}
