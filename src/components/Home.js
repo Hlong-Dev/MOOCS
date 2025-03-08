@@ -32,10 +32,12 @@ const Home = () => {
         return () => {
             document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [isSidebarOpen]); 
+    }, [isSidebarOpen]);
+
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
     };
+
     const createRoomWithVideo = async (videoId, videoTitle) => {
         try {
             const token = localStorage.getItem('token');
@@ -223,79 +225,88 @@ const Home = () => {
                 </div>
             )}
 
-            {/* Hiển thị kết quả tìm kiếm */}
-            {youtubeResults.length > 0 ? (
-                <div className="youtube-results-row">
-                    {youtubeResults.map((video) => (
-                        <div
-                            key={video.id.videoId}
-                            className="video-card"
-                            onClick={() => createRoomWithVideo(video.id.videoId, video.snippet.title)}
-                        >
-                            <img
-                                src={video.snippet.thumbnails.medium.url}
-                                alt={video.snippet.title}
-                                className="video-thumbnail"
-                            />
-                            <div className="video-info">
-                                <h3>{video.snippet.title}</h3>
-                                <p>{video.snippet.channelTitle}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-            ) : (
+            {/* Hiển thị kết quả tìm kiếm video */}
+            {youtubeResults.length > 0 && (
                 <>
-                    <div className="services">
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/Q1iIpAE.png" alt="YouTube" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/xn6Ehfv.png" alt="Twitch" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/Vf6tfih.png" alt="Netflix" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/yN245me.png" alt="Disney+" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/zgsS7Of.png" alt="Prime Video" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/axFodMO.png" alt="Playlist" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/gNSGsSN.png" alt="tubi" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/MEXsqoF.png" alt="gg" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/QMVPZjU.png" alt="gg drive" className="white-icon" />
-                        </div>
-                        <div className="service-item">
-                            <img src="https://i.imgur.com/s2O07An.png" alt="Playlist" />
-                        </div>
-                    </div>
-
-                        <div className="content">
-                            <div className="toggle-container">
-                                <span className="toggle-label">Hide mature content</span>
-                                <label className="toggle-switch">
-                                    <input type="checkbox" />
-                                    <span className="toggle-slider"></span>
-                                </label>
+                    <div className="section-title">Video từ YouTube</div>
+                    <div className="youtube-results-row">
+                        {youtubeResults.map((video) => (
+                            <div
+                                key={video.id.videoId}
+                                className="video-card"
+                                onClick={() => createRoomWithVideo(video.id.videoId, video.snippet.title)}
+                            >
+                                <img
+                                    src={video.snippet.thumbnails.medium.url}
+                                    alt={video.snippet.title}
+                                    className="video-thumbnail"
+                                />
+                                <div className="video-info">
+                                    <h3>{video.snippet.title}</h3>
+                                    <p>{video.snippet.channelTitle}</p>
+                                </div>
                             </div>
-                            <RoomList />
-                        </div>
+                        ))}
+                    </div>
                 </>
             )}
+
+            {/* Hiển thị các dịch vụ khi không có tìm kiếm */}
+            {!searchTerm && (
+                <div className="services">
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/Q1iIpAE.png" alt="YouTube" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/xn6Ehfv.png" alt="Twitch" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/Vf6tfih.png" alt="Netflix" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/yN245me.png" alt="Disney+" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/zgsS7Of.png" alt="Prime Video" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/axFodMO.png" alt="Playlist" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/gNSGsSN.png" alt="tubi" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/MEXsqoF.png" alt="gg" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/QMVPZjU.png" alt="gg drive" className="white-icon" />
+                    </div>
+                    <div className="service-item">
+                        <img src="https://i.imgur.com/s2O07An.png" alt="Playlist" />
+                    </div>
+                </div>
+            )}
+
+            <div className="content">
+                {!searchTerm && (
+                    <div className="toggle-container">
+                        <span className="toggle-label">Hide mature content</span>
+                        <label className="toggle-switch">
+                            <input type="checkbox" />
+                            <span className="toggle-slider"></span>
+                        </label>
+                    </div>
+                )}
+
+                {/* Luôn truyền searchTerm xuống RoomList */}
+                <RoomList searchTerm={searchTerm} />
+            </div>
+
             {isSidebarOpen && <div className="sidebar-overlay"></div>}
             <nav ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
                 <div className="sidebar-content">
                     <div className="sidebar-section">
-                        <Link to="/" className="sidebar-item">
+                        <Link to="/" className="sidebar-item active">
                             <i className="fas fa-globe"></i>
                             <span>CineMate</span>
                         </Link>

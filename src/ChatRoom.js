@@ -1439,7 +1439,7 @@ const ChatRoom = () => {
                                     </div>
 
                                     {isLoading && (
-                                        <div className="loading-bar-container">
+                                        <div className="loading-bar-containerr">
                                             <div className="loading-bar"></div>
                                         </div>
                                     )}

@@ -10,7 +10,8 @@ import Login from './components/Login';
 import Register from './components/Register';
 import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
-
+import Account from './components/Account';
+import Friends from './components/Friends';
 function App() {
     return (
         <AuthProvider>
@@ -19,7 +20,8 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
-
+                    <Route path="/account" element={<Account />} />
+                    <Route path="/friends" element={<Friends />} />
                     {/* Bảo vệ Dashboard bằng PrivateRoute */}
                     <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
 

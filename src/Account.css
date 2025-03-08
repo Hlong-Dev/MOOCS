@@ -1,0 +1,173 @@
+﻿/* src/Account.css */
+/* Sử dụng lại nhiều style từ Home.css */
+
+/* Styles cho phần nội dung tài khoản */
+.account-content {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 20px;
+    top: 80px; /* Để không bị che bởi header */
+}
+
+.account-card {
+    /*background-color: rgba(25, 25, 35, 0.8);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);*/
+    width: 100%;
+    max-width: 600px;
+    padding: 30px;
+    color: white;
+    margin-bottom: 40px;
+}
+
+.account-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.avatar-container {
+    position: relative;
+    margin-right: 20px;
+}
+
+.user-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid rgba(255, 255, 255, 0.2);
+}
+
+.user-info {
+    flex-grow: 1;
+}
+
+.display-name {
+    font-size: 24px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+}
+
+.username {
+    font-size: 16px;
+    color: rgba(255, 255, 255, 0.7);
+    margin: 0;
+}
+
+.account-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.action-button {
+    padding: 12px 15px;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+}
+
+    .action-button i {
+        margin-right: 8px;
+    }
+
+.edit-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+    .edit-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+.logout-button {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+    .logout-button:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+.delete-button {
+    background-color: rgba(220, 53, 69, 0.8);
+    color: white;
+}
+
+    .delete-button:hover {
+        background-color: rgb(220, 53, 69);
+    }
+
+.account-details {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.detail-section {
+    background-color: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+    .detail-section h3 {
+        margin-top: 0;
+        margin-bottom: 15px;
+        font-size: 18px;
+        color: rgba(255, 255, 255, 0.9);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 10px;
+    }
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.detail-label {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.detail-value {
+    font-weight: 500;
+}
+
+/* Đánh dấu item sidebar đang active */
+.sidebar-item.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .account-card {
+        padding: 20px;
+    }
+
+    .account-header {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .avatar-container {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+
+    .user-avatar {
+        width: 80px;
+        height: 80px;
+    }
+}

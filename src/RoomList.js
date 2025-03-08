@@ -2,7 +2,7 @@
 import { useNavigate } from 'react-router-dom';
 import './RoomList.css';
 
-const RoomList = () => {
+const RoomList = ({ searchTerm = '' }) => {
     const [rooms, setRooms] = useState([]);
     const [error, setError] = useState(null);
     const navigate = useNavigate();
@@ -61,12 +61,23 @@ const RoomList = () => {
         }
     };
 
+    // Lọc phòng theo từ khóa tìm kiếm
+    const filteredRooms = searchTerm
+        ? rooms.filter(room =>
+            room.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            (room.current_video_title && room.current_video_title.toLowerCase().includes(searchTerm.toLowerCase()))
+        )
+        : rooms;
+
     if (error) return <div className="glass-error-message">{error}</div>;
+
+    // Kiểm tra nếu không có phòng nào sau khi lọc
 
     return (
         <div className="glass-room-container">
+           
             <div className="glass-room-list">
-                {rooms.map(room => (
+                {filteredRooms.map(room => (
                     <div
                         key={room.id}
                         className="glass-room-card"

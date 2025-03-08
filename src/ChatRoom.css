@@ -1,4 +1,11 @@
-﻿/* Container for the entire chat section */
+﻿.loading-bar-containerr {
+
+    width: 100%;
+    height: 4px;
+    background-color: black;
+    position: relative;
+    overflow: hidden;
+}/* Container for the entire chat section */
 .chat-section {
     flex: 1;
     display: flex;
