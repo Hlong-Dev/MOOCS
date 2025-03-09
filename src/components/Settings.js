@@ -196,7 +196,7 @@ const Settings = () => {
                         onClick={() => setActiveTab('rave')}
                     >
                         <i className="fas fa-film"></i>
-                        <span>Rave</span>
+                        <span>CineMate</span>
                     </div>
 
                     <div
