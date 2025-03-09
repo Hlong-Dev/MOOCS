@@ -12,6 +12,7 @@ import Dashboard from './components/Dashboard';
 import PrivateRoute from './components/PrivateRoute';
 import Account from './components/Account';
 import Friends from './components/Friends';
+import Settings from './components/Settings';
 function App() {
     return (
         <AuthProvider>
@@ -22,6 +23,7 @@ function App() {
                     <Route path="/register" element={<Register />} />
                     <Route path="/account" element={<Account />} />
                     <Route path="/friends" element={<Friends />} />
+                    <Route path="/settings" element={<Settings />} />
                     {/* Bảo vệ Dashboard bằng PrivateRoute */}
                     <Route path="/dashboard" element={<PrivateRoute><Dashboard /></PrivateRoute>} />
 
