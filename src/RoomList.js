@@ -71,11 +71,8 @@ const RoomList = ({ searchTerm = '' }) => {
 
     if (error) return <div className="glass-error-message">{error}</div>;
 
-    // Kiểm tra nếu không có phòng nào sau khi lọc
-
     return (
         <div className="glass-room-container">
-           
             <div className="glass-room-list">
                 {filteredRooms.map(room => (
                     <div
@@ -90,6 +87,11 @@ const RoomList = ({ searchTerm = '' }) => {
                                     alt={room.current_video_title || room.name}
                                     className="glass-thumbnail-img"
                                 />
+                                <div className="glass-thumbnail-overlay">
+                                    <h3 className="glass-video-title-overlay">
+                                        {room.current_video_title || 'Chưa có video đang phát'}
+                                    </h3>
+                                </div>
                                 <div className="glass-play-icon">
                                     <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path d="M8 5V19L19 12L8 5Z" fill="white" />
@@ -97,9 +99,6 @@ const RoomList = ({ searchTerm = '' }) => {
                                 </div>
                             </div>
                             <div className="glass-room-details">
-                                <h3 className="glass-video-title">
-                                    {room.current_video_title || 'Chưa có video đang phát'}
-                                </h3>
                                 <div className="glass-room-name">
                                     {room.name}
                                 </div>
