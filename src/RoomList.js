@@ -52,13 +52,12 @@ const RoomList = ({ searchTerm = '' }) => {
     // Hàm xử lý điều hướng với video
     const handleRoomJoin = (room) => {
         // Sửa thành current_video_url (chữ thường)
-        if (room.current_video_url) {
-            // Nếu có video, chuyển hướng với thông tin video
-            navigate(`/room/${room.id}?videoId=${room.videoId}&autoplay=true`);
-        } else {
-            // Nếu không có video, chuyển hướng bình thường
-            navigate(`/room/${room.id}`);
-        }
+        const roomUrl = room.current_video_url
+            ? `/room/${room.id}?videoId=${room.videoId}&autoplay=true`
+            : `/room/${room.id}`;
+
+        // Reload trang để reset WebSocket
+        window.location.href = roomUrl;
     };
 
     // Lọc phòng theo từ khóa tìm kiếm

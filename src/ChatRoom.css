@@ -777,3 +777,22 @@ body iframe[src*="youtube.com"] {
 .ytp-chrome-bottom {
     background-color: transparent !important;
 }
+
+
+
+.video-section.minimized-room-list .react-player {
+    position: fixed;
+    top: 70px; /* Đặt cách top 70px để không bị che bởi header */
+    right: 20px;
+    width: 400px !important;
+    height: 225px !important;
+    z-index: 1000;
+    background: #000;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.video-section.minimized-room-list {
+    /* Đảm bảo không ảnh hưởng đến layout chat */
+    height: auto;
+}

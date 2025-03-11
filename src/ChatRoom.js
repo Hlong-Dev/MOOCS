@@ -12,6 +12,7 @@ import axios from 'axios'; // Thêm axios để gọi API
 import VideoQueue from './components/VideoQueue';
 import VideoEndScreen from './components/VideoEndScreen';
 import VideoBackgroundEffect from './VideoBackgroundEffect';
+import RoomList from './RoomList';
 window.stompClientGlobal = null;
 
 const ChatRoom = () => {
@@ -53,12 +54,29 @@ const ChatRoom = () => {
     const [showEndScreen, setShowEndScreen] = useState(false);
     const [showCountdown, setShowCountdown] = useState(false);
     const [countdown, setCountdown] = useState(10);
-
+    const [isInitialized, setIsInitialized] = useState(false);
+    const [showRoomList, setShowRoomList] = useState(false);
     // Tạo refs để theo dõi tin nhắn đã gửi (tránh duplicate)
     const sentMessagesRef = useRef(new Set());
+    const handleRoomListClick = () => {
+        const newShowRoomList = !showRoomList;
+        setShowRoomList(newShowRoomList);
 
+        // Đóng các modal khác khi mở danh sách phòng
+        if (newShowRoomList) {
+            setShowVideoList(false);
+            setShowQueueModal(false);
+        }
+    };
     const handleQueueClick = () => {
-        setShowQueueModal(prev => !prev); // Toggle modal thay vì chỉ mở
+        const newShowQueueModal = !showQueueModal;
+        setShowQueueModal(newShowQueueModal);
+
+        // If we're opening the queue modal, close the video list
+        if (newShowQueueModal) {
+            setShowVideoList(false);
+            setShowRoomList(false);
+        }
     };
 
     // Hàm xử lý tin nhắn video
@@ -699,7 +717,7 @@ const ChatRoom = () => {
             } else {
                 await loadTrendingVideos();
             }
-
+            setShowRoomList(false);
             setShowEndScreen(false);
             setShowVideoList(false);
             setShowCountdown(false);
@@ -792,6 +810,7 @@ const ChatRoom = () => {
         if (!currentVideoUrl) {
             setCurrentVideoUrl(videoUrl);
             setShowVideoList(false);
+            setShowRoomList(false);
             setIsPlaying(true);
             setYoutubeResults([]);
 
@@ -849,70 +868,7 @@ const ChatRoom = () => {
     }, [searchTerm]);
 
     // Ảuto play video from Params
-    useEffect(() => {
-        const initializeVideoFromUrl = async () => {
-            if (urlVideoId && isWebSocketReady && stompClientRef.current?.connected) {
-                try {
-                    // Fetch video details from YouTube API
-                    const videoDetailsResponse = await axios.get(
-                        `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${urlVideoId}&key=${API_KEY}`
-                    );
-
-                    const videoTitle = videoDetailsResponse.data.items[0]?.snippet.title || 'Unknown Video';
-                    const videoUrl = `https://www.youtube.com/watch?v=${urlVideoId}`;
-
-                    // Fetch channel avatar
-                    let channelAvatar = 'https://i.imgur.com/WxNkK7J.png';
-                    try {
-                        channelAvatar = await fetchYouTubeChannelAvatar(urlVideoId);
-                    } catch (avatarError) {
-                        console.error('Error fetching channel avatar:', avatarError);
-                    }
-
-                    // Set video state
-                    setCurrentVideoUrl(videoUrl);
-                    setShowVideoList(false);
-                    setIsPlaying(autoplay);
-
-                    // If user is room owner, broadcast video state to all users
-                    if (isOwner) {
-                        const videoState = {
-                            videoUrl: videoUrl,
-                            currentTime: 0,
-                            isPlaying: autoplay,
-                            type: 'VIDEO_UPDATE'
-                        };
-
-                        stompClientRef.current.publish({
-                            destination: `/exchange/video.exchange/video.${roomId}`,
-                            body: JSON.stringify(videoState)
-                        });
-
-                        // Send chat notification with video title and channel avatar
-                        const notificationMessage = {
-                            sender: 'Now playing',
-                            content: `${videoTitle}`,
-                            type: 'CHAT',
-                            avtUrl: channelAvatar
-                        };
-
-                        stompClientRef.current.publish({
-                            destination: `/exchange/chat.exchange/room.${roomId}`,
-                            body: JSON.stringify(notificationMessage)
-                        });
-                    }
-                } catch (error) {
-                    console.error('Error fetching video details:', error);
-                    // Still play the video even if we can't get the title
-                    const videoUrl = `https://www.youtube.com/watch?v=${urlVideoId}`;
-                    setCurrentVideoUrl(videoUrl);
-                    setShowVideoList(false);
-                    setIsPlaying(autoplay);
-                }
-            }
-        };
-        initializeVideoFromUrl();
-    }, [urlVideoId, autoplay, isWebSocketReady, isOwner, roomId]);
+    
 
     // Thêm useEffect để theo dõi việc load ảnh
     useEffect(() => {
@@ -976,25 +932,7 @@ const ChatRoom = () => {
     }, [isPlaying]);
 
     // Fetch Room Info
-    useEffect(() => {
-        const fetchRoomInfo = async () => {
-            try {
-                const response = await fetch(`https://colkidclub-hutech.id.vn/api/rooms/${roomId}`, {
-                    credentials: 'include',
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const roomData = await response.json();
-                setOwnerUsername(roomData.owner_username);
-                ownerUsernameRef.current = roomData.owner_username;
-            } catch (error) {
-                console.error("Error fetching room info:", error);
-            }
-        };
-
-        fetchRoomInfo();
-    }, [roomId]);
+    
 
     // Fetch Video List
     useEffect(() => {
@@ -1013,73 +951,106 @@ const ChatRoom = () => {
 
     // Initialize WebSocket
     useEffect(() => {
-        // Initialize WebSocket only if not already initialized
-        if (!stompClientRef.current) {
-            const client = new Client({
-                brokerURL: 'wss://rabbitmq.colkidclub-hutech.id.vn/ws',
-                reconnectDelay: 5000,
-                heartbeatIncoming: 10000,
-                heartbeatOutgoing: 10000,
-                onConnect: () => {
-                    console.log('WebSocket connected');
-                    setConnected(true);
-                    setIsWebSocketReady(true); // Đánh dấu WebSocket đã sẵn sàng
+        // Tạo hàm khởi tạo đồng bộ
+        const initialize = async () => {
+            try {
+                // 1. Lấy thông tin phòng trước
+                const response = await fetch(`https://colkidclub-hutech.id.vn/api/rooms/${roomId}`, {
+                    credentials: 'include',
+                });
 
-                    // Lưu stompClient vào biến toàn cục cho Header.js sử dụng
-                    window.stompClientGlobal = client;
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
 
-                    // Subscribe để nhận tin nhắn video
-                    client.subscribe(`/exchange/video.exchange/video.${roomId}`, (message) => {
-                        try {
-                            const receivedMessage = JSON.parse(message.body);
-                            console.log('Received video message:', receivedMessage);
-                            handleVideoMessage(receivedMessage);
-                        } catch (error) {
-                            console.error('Error parsing video message:', error);
-                        }
+                const roomData = await response.json();
+                setOwnerUsername(roomData.owner_username);
+                ownerUsernameRef.current = roomData.owner_username;
+
+                // Kiểm tra ngay lập tức nếu người dùng hiện tại là chủ phòng
+                const isCurrentUserOwner = currentUser.username === roomData.owner_username;
+
+                // 2. Sau khi có thông tin phòng, khởi tạo WebSocket
+                if (!stompClientRef.current) {
+                    const client = new Client({
+                        brokerURL: 'wss://rabbitmq.colkidclub-hutech.id.vn/ws',
+                        reconnectDelay: 5000,
+                        heartbeatIncoming: 10000,
+                        heartbeatOutgoing: 10000,
+                        onConnect: () => {
+                            console.log('WebSocket connected');
+                            setConnected(true);
+                            setIsWebSocketReady(true);
+                            window.stompClientGlobal = client;
+
+                            // Subscribe để nhận tin nhắn video
+                            client.subscribe(`/exchange/video.exchange/video.${roomId}`, (message) => {
+                                try {
+                                    const receivedMessage = JSON.parse(message.body);
+                                    console.log('Received video message:', receivedMessage);
+                                    handleVideoMessage(receivedMessage);
+                                } catch (error) {
+                                    console.error('Error parsing video message:', error);
+                                }
+                            });
+
+                            // Subscribe để nhận tin nhắn chat
+                            client.subscribe(`/exchange/chat.exchange/room.${roomId}`, (message) => {
+                                try {
+                                    const receivedMessage = JSON.parse(message.body);
+                                    console.log('Received chat message:', receivedMessage);
+                                    handleChatMessage(receivedMessage);
+                                } catch (error) {
+                                    console.error('Error parsing chat message:', error);
+                                }
+                            });
+
+                            // Gửi thông báo tham gia
+                            const joinMessage = {
+                                sender: currentUser.username,
+                                avtUrl: currentUser.avtUrl,
+                                type: 'JOIN'
+                            };
+
+                            client.publish({
+                                destination: `/exchange/chat.exchange/room.${roomId}`,
+                                body: JSON.stringify(joinMessage),
+                            });
+
+                            // Xử lý phát video nếu có thông tin từ URL và là chủ phòng
+                            if (isCurrentUserOwner && urlVideoId) {
+                                // Phát video từ URL ngay lập tức nếu là chủ phòng
+                                initializeVideoFromUrlForOwner(client);
+                            }
+                        },
+                        // Các phần xử lý lỗi giữ nguyên
+                        onStompError: (frame) => {
+                            console.error('Broker reported error: ' + frame.headers['message']);
+                            setConnected(false);
+                        },
+                        onWebSocketClose: () => {
+                            console.error('WebSocket connection closed, attempting to reconnect...');
+                            setConnected(false);
+                        },
+                        onWebSocketError: (error) => {
+                            console.error('WebSocket error occurred: ', error);
+                            setConnected(false);
+                        },
                     });
 
-                    // Subscribe để nhận tin nhắn chat
-                    client.subscribe(`/exchange/chat.exchange/room.${roomId}`, (message) => {
-                        try {
-                            const receivedMessage = JSON.parse(message.body);
-                            console.log('Received chat message:', receivedMessage);
-                            handleChatMessage(receivedMessage);
-                        } catch (error) {
-                            console.error('Error parsing chat message:', error);
-                        }
-                    });
+                    stompClientRef.current = client;
+                    client.activate();
+                }
 
-                    // Gửi thông báo tham gia
-                    const joinMessage = {
-                        sender: currentUser.username,
-                        avtUrl: currentUser.avtUrl,
-                        type: 'JOIN'
-                    };
+                // Đánh dấu đã khởi tạo xong
+                setIsInitialized(true);
 
-                    client.publish({
-                        destination: `/exchange/chat.exchange/room.${roomId}`,
-                        body: JSON.stringify(joinMessage),
-                    });
-                },
-                onStompError: (frame) => {
-                    console.error('Broker reported error: ' + frame.headers['message']);
-                    setConnected(false);
-                },
-                onWebSocketClose: () => {
-                    console.error('WebSocket connection closed, attempting to reconnect...');
-                    setConnected(false);
-                },
-                onWebSocketError: (error) => {
-                    console.error('WebSocket error occurred: ', error);
-                    setConnected(false);
-                },
-            });
+            } catch (error) {
+                console.error("Error during initialization:", error);
+            }
+        };
 
-            // Save stompClient instance to ref
-            stompClientRef.current = client;
-            client.activate();
-        }
+        initialize();
 
         // Cleanup khi component unmounts
         return () => {
@@ -1096,12 +1067,91 @@ const ChatRoom = () => {
                 });
 
                 stompClientRef.current.deactivate();
-                // Xóa biến toàn cục khi unmount
                 window.stompClientGlobal = null;
                 console.log('WebSocket disconnected');
             }
         };
-    }, [roomId, currentUser.username, currentUser.avtUrl, navigate]);
+    }, [roomId, currentUser.username, currentUser.avtUrl, navigate, urlVideoId]);
+
+    // Thêm hàm mới để xử lý phát video cho chủ phòng từ URL
+    const initializeVideoFromUrlForOwner = async (client) => {
+        if (urlVideoId) {
+            try {
+                // Fetch video details from YouTube API
+                const videoDetailsResponse = await axios.get(
+                    `https://www.googleapis.com/youtube/v3/videos?part=snippet&id=${urlVideoId}&key=${API_KEY}`
+                );
+
+                const videoTitle = videoDetailsResponse.data.items[0]?.snippet.title || 'Unknown Video';
+                const videoUrl = `https://www.youtube.com/watch?v=${urlVideoId}`;
+
+                // Fetch channel avatar
+                let channelAvatar = 'https://i.imgur.com/WxNkK7J.png';
+                try {
+                    channelAvatar = await fetchYouTubeChannelAvatar(urlVideoId);
+                } catch (avatarError) {
+                    console.error('Error fetching channel avatar:', avatarError);
+                }
+
+                // Set video state
+                setCurrentVideoUrl(videoUrl);
+                setShowVideoList(false);
+                setShowRoomList(false);
+                setIsPlaying(autoplay);
+
+                // Gửi thông báo ngay lập tức
+                const videoState = {
+                    videoUrl: videoUrl,
+                    currentTime: 0,
+                    isPlaying: autoplay,
+                    type: 'VIDEO_UPDATE'
+                };
+
+                client.publish({
+                    destination: `/exchange/video.exchange/video.${roomId}`,
+                    body: JSON.stringify(videoState)
+                });
+
+                // Gửi thông báo chat "Now playing" ngay lập tức
+                const notificationMessage = {
+                    sender: 'Now playing',
+                    content: `${videoTitle}`,
+                    type: 'CHAT',
+                    avtUrl: channelAvatar
+                };
+
+                client.publish({
+                    destination: `/exchange/chat.exchange/room.${roomId}`,
+                    body: JSON.stringify(notificationMessage)
+                });
+
+                // Cập nhật thông tin video cho room
+                updateRoomVideoInfo(videoUrl, videoTitle);
+
+            } catch (error) {
+                console.error('Error fetching video details:', error);
+
+                // Vẫn phát video ngay cả khi không thể lấy được tiêu đề
+                const videoUrl = `https://www.youtube.com/watch?v=${urlVideoId}`;
+                setCurrentVideoUrl(videoUrl);
+                setShowVideoList(false);
+                setIsPlaying(autoplay);
+
+                // Gửi thông báo với tiêu đề mặc định
+                const videoState = {
+                    videoUrl: videoUrl,
+                    currentTime: 0,
+                    isPlaying: autoplay,
+                    type: 'VIDEO_UPDATE'
+                };
+
+                client.publish({
+                    destination: `/exchange/video.exchange/video.${roomId}`,
+                    body: JSON.stringify(videoState)
+                });
+            }
+        }
+    };
     // Cuộn xuống cuối chat khi có tin nhắn mới
     useEffect(() => {
         if (chatMessagesRef.current) {
@@ -1113,13 +1163,14 @@ const ChatRoom = () => {
     const handleVideoUpdate = (message) => {
         console.log('Handling VIDEO_UPDATE:', message);
 
-        if (message.videoUrl && !isOwner) {  // Chỉ người xem mới cập nhật
-            setCurrentVideoUrl(message.videoUrl);
-
-            // Chỉ đóng video list khi người dùng là chủ phòng
-            if (isOwner) {
-                setShowVideoList(false);
+        if (message.videoUrl) {
+            // Nếu không phải chủ phòng thì cập nhật video URL
+            if (!isOwner) {
+                setCurrentVideoUrl(message.videoUrl);
             }
+
+            // Đóng danh sách video cho TẤT CẢ người dùng khi nhận được video
+            setShowVideoList(false);
 
             if (message.isPlaying !== undefined) {
                 setIsPlaying(message.isPlaying);
@@ -1134,7 +1185,13 @@ const ChatRoom = () => {
             }
         }
     };
-
+    // Thêm useEffect này vào code của bạn
+    useEffect(() => {
+        // Khi có video URL, tự động ẩn danh sách video
+        if (currentVideoUrl) {
+            setShowVideoList(false);
+        }
+    }, [currentVideoUrl]);
     const processImage = async (file) => {
         return new Promise((resolve) => {
             new Compressor(file, {
@@ -1377,7 +1434,14 @@ const ChatRoom = () => {
 
     // Hàm show list video
     const handleShowVideoList = () => {
-        setShowVideoList(prev => !prev); // Toggle showVideoList
+        const newShowVideoList = !showVideoList;
+        setShowVideoList(newShowVideoList);
+
+        // If we're opening the video list, close the queue modal
+        if (newShowVideoList) {
+            setShowQueueModal(false);
+            setShowRoomList(false);
+        }
     };
 
     // Phần JSX giữ nguyên như code cũ
@@ -1397,18 +1461,21 @@ const ChatRoom = () => {
                 onQueueClick={handleQueueClick}
                 showCountdown={showCountdown}
                 countdown={countdown}
+                onRoomListClick={handleRoomListClick}
             />
 
             <div className="main-content">
                 {/* Video Section */}
-                <div className={`video-section ${showVideoList ? 'with-list' : ''}`}>
+             
+
+                <div className={`video-section 
+    ${showVideoList ? 'with-list' : ''} 
+    ${showRoomList ? 'minimized-room-list' : ''}`}>
                     {showEndScreen ? (
                         <VideoEndScreen
                             videoQueue={videoQueue}
                             onVideoSelect={(selectedVideo) => {
-                                // Kiểm tra xem người dùng hiện tại có quyền phát video không
                                 if (stompClientRef.current && stompClientRef.current.connected) {
-                                    // Gửi thông điệp vote/chọn video
                                     const voteMessage = {
                                         type: 'VIDEO_VOTE',
                                         video: selectedVideo,
@@ -1427,7 +1494,7 @@ const ChatRoom = () => {
                     ) : (
                         <>
                             {/* Thanh tìm kiếm */}
-                            {showVideoList && (
+                            {(showVideoList) && (
                                 <>
                                     <div className="search-bar">
                                         <input
@@ -1448,46 +1515,51 @@ const ChatRoom = () => {
 
                             {/* Video Player */}
                             {currentVideoUrl && (
-                                    <ReactPlayer
-                                        ref={playerRef}
-                                        url={currentVideoUrl}
-                                        onProgress={handleProgress}
-                                        onSeeking={handleSeeking}
-                                        onSeeked={handleSeeked}
-                                        className={`react-player ${isOwner ? 'owner' : ''}`}
-                                        playing={isPlaying}
-                                        width="100%"
-                                        height="100%"
-                                        onPause={handlePause}
-                                        onPlay={handlePlay}
-                                        onProgress={handleProgress}
-                                        onEnded={handleVideoEnd}
-                                        config={{
-                                            file: {
-                                                attributes: {
-                                                    crossOrigin: 'anonymous'
-                                                }
-                                            },
-                                            youtube: {
-                                                playerVars: {
-                                                    controls: 1,  // Always show controls
-                                                    modestbranding: 1,
-                                                    playsinline: 1,
-                                                    rel: 0,
-                                                    showinfo: 0,
-                                                    iv_load_policy: 3,
-                                                    fs: 1,  // Always allow fullscreen
-                                                }
+                                <ReactPlayer
+                                    ref={playerRef}
+                                    url={currentVideoUrl}
+                                    onProgress={handleProgress}
+                                    onSeeking={handleSeeking}
+                                    onSeeked={handleSeeked}
+                                    className={`react-player ${isOwner ? 'owner' : ''} ${showRoomList ? 'minimized-player' : ''}`}
+                                    playing={isPlaying}
+                                    width="100%"
+                                    height="100%"
+                                    onPause={handlePause}
+                                    onPlay={handlePlay}
+                                    onProgress={handleProgress}
+                                    onEnded={handleVideoEnd}
+                                    config={{
+                                        file: {
+                                            attributes: {
+                                                crossOrigin: 'anonymous'
                                             }
-                                        }}
-                                        style={{
-                                            pointerEvents: isOwner ? 'auto' : 'none',
-                                            objectFit: 'cover'
-                                        }}
-                                    />
+                                        },
+                                        youtube: {
+                                            playerVars: {
+                                                controls: 1,
+                                                modestbranding: 1,
+                                                playsinline: 1,
+                                                rel: 0,
+                                                showinfo: 0,
+                                                iv_load_policy: 3,
+                                                fs: 1,
+                                            }
+                                        }
+                                    }}
+                                    style={{
+                                        pointerEvents: isOwner ? 'auto' : 'none',
+                                        objectFit: 'cover'
+                                    }}
+                                />
                             )}
 
-                            {/* Danh sách video */}
+                                {/* Danh sách video */}
+                                {showRoomList && (
+                                    <div className="room-list-overlay">
+                                        <RoomList />
+                                    </div>
+                                )}
                             {showVideoList && (
                                 <div className="grid-container">
                                     {youtubeResults.length > 0 && youtubeResults.map((video) => (
