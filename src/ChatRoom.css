@@ -290,7 +290,7 @@
 .chat-input-container {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 5px;
     background-color: #2a2a2a;
     flex-shrink: 0; /* Prevent the input from shrinking */
 }
@@ -443,46 +443,86 @@
         background-color: #2a2a2a;
     }
 }
+/* Cập nhật CSS cho modal success trong ChatRoom */
 .success-modal {
     position: fixed;
-    bottom: 20px;
-    right: 20px;
-    background-color: #4CAF50;
-    color: white;
-    padding: 15px 25px;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
     z-index: 1000;
-    animation: slideIn 0.3s ease-out;
+    animation: fadeIn 0.3s ease;
 }
 
-@keyframes slideIn {
+    .success-modal p {
+        background-color: rgba(23, 23, 23, 0.8);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 12px;
+        font-size: 16px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        max-width: 80%;
+        text-align: center;
+    }
+
+/* Hiệu ứng fade in */
+@keyframes fadeIn {
     from {
-        transform: translateX(100%);
         opacity: 0;
     }
 
     to {
-        transform: translateX(0);
         opacity: 1;
     }
 }
 
-.success-modal.hide {
-    animation: slideOut 0.3s ease-in forwards;
+/* Modal copy link */
+.success-modal, .copy-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease;
 }
 
-@keyframes slideOut {
-    from {
-        transform: translateX(0);
-        opacity: 1;
+/* Nút Top/Bottom of Queue */
+.modal-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+    .modal-actions button {
+        background-color: transparent;
+        color: white;
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 25px;
+        padding: 12px 24px;
+        font-size: 14px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-    to {
-        transform: translateX(100%);
-        opacity: 0;
-    }
-}
+        .modal-actions button:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-color: white;
+        }
 .message-item {
     position: relative;
 }
@@ -541,7 +581,7 @@
     border-radius: 5px;
     font-size: 14px;
     color: #555;
-    margin-bottom: 5px;
+    margin-bottom: 21px;
 }
 
 .reply-content {
@@ -681,7 +721,12 @@
         text-overflow: ellipsis; /* Thêm dấu ... */
         max-width: 90%; /* Giới hạn chiều rộng */
     }
-
+.voice-chat-overlay {
+    position: absolute;
+    bottom: 12px; /* Điều chỉnh vị trí để đè lên phần trên của chat-input-container */
+    left: 12px; /* Căn lề trái */
+    z-index: 10; /* Đảm bảo nút hiển thị trên các phần tử khác */
+}
 
 .chat-section {
     position: relative;
@@ -722,14 +767,17 @@
 
 /* Input section */
 .chat-input-container {
-    background: rgba(0, 0, 0, 0.4);
+    background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .chat-input {
-    background: rgba(255, 255, 255, 0.1);
+    width: 100px;
+    margin-left: 58px;
+    outline: none;
+    background: transparent;
     color: white;
 }
 
@@ -796,3 +844,72 @@ body iframe[src*="youtube.com"] {
     /* Đảm bảo không ảnh hưởng đến layout chat */
     height: auto;
 }
+
+
+.chat-actionns {
+    display: flex;
+    align-items: center;
+}
+
+.actionn-button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+   
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.actionn-icon {
+    margin: 1px;
+    width: 24px;
+    height: 24px;
+    fill: white;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+}
+
+    .actionn-icon:hover {
+        opacity: 1;
+    }
+
+
+.room-link-message {
+    display: flex;
+    align-items: center;
+   
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin: 4px 0;
+}
+
+.room-link-text {
+
+    font-weight: bold;
+    flex-grow: 1;
+    margin-right: 8px;
+}
+
+
+.copy-link-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+    .copy-link-button:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+.copy-icon {
+    fill: white;
+}
+
+

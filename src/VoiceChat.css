@@ -1,0 +1,59 @@
+﻿/* VoiceChat.css */
+.voice-chat-container {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.mic-button {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background-color: white;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: transform 0.05s ease; /* Transitioncho hiệu ứng to nhỏ */
+    z-index: 2;
+    padding: 0;
+}
+
+    /* Khi thu âm: thêm viền đỏ thay vì đổi background */
+    .mic-button.recording {
+        background-color: white; /* Vẫn giữ nền trắng */
+        border: 2px solid #ff3b30; /* Thêm viền đỏ */
+        box-shadow: 0 0 10px rgba(255, 59, 48, 0.3); /* Thêm hiệu ứng glow */
+    }
+
+.mic-icon {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .mic-icon svg {
+        width: 100%;
+        height: 100%;
+        transition: fill 0.2s ease;
+    }
+
+/* Khi không thu âm: icon màu đen */
+.mic-button:not(.recording) .mic-icon svg {
+    fill: #000000;
+}
+
+/* Khi thu âm: icon màu đỏ */
+.mic-button.recording .mic-icon svg {
+    fill: #ff3b30;
+}
+
+/* Xóa bỏ các vòng tròn bên ngoài không cần thiết */
+.volume-rings {
+    display: none; /* Ẩn hoàn toàn */
+}

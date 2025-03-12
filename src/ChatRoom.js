@@ -13,6 +13,7 @@ import VideoQueue from './components/VideoQueue';
 import VideoEndScreen from './components/VideoEndScreen';
 import VideoBackgroundEffect from './VideoBackgroundEffect';
 import RoomList from './RoomList';
+import VoiceChat from './components/VoiceChat';
 window.stompClientGlobal = null;
 
 const ChatRoom = () => {
@@ -56,6 +57,7 @@ const ChatRoom = () => {
     const [countdown, setCountdown] = useState(10);
     const [isInitialized, setIsInitialized] = useState(false);
     const [showRoomList, setShowRoomList] = useState(false);
+    const [showCopyModal, setShowCopyModal] = useState(false);
     // Tạo refs để theo dõi tin nhắn đã gửi (tránh duplicate)
     const sentMessagesRef = useRef(new Set());
     const handleRoomListClick = () => {
@@ -100,7 +102,50 @@ const ChatRoom = () => {
                 console.log('Unknown video message type:', receivedMessage.type);
         }
     };
+    const sendRoomLinkMessage = () => {
+        console.log("Attempting to send room link. Connected:", stompClientRef.current?.connected);
+        console.log("Current user:", currentUser.username, "Owner:", ownerUsernameRef.current);
 
+        if (stompClientRef.current && stompClientRef.current.connected &&
+            currentUser.username === ownerUsernameRef.current) {
+            const roomLink = `https://cinemate-lavarel.vercel.app/room/${roomId}`;
+
+            const linkMessage = {
+                sender: 'System',
+                content: `Link: ${roomLink}`,
+                type: 'CHAT',
+                avtUrl: 'https://i.imgur.com/axHfgSw.png',
+                isRoomLink: true
+            };
+
+            console.log("Sending room link message:", linkMessage);
+            stompClientRef.current.publish({
+                destination: `/exchange/chat.exchange/room.${roomId}`,
+                body: JSON.stringify(linkMessage)
+            });
+        } else {
+            console.log("Cannot send room link - conditions not met");
+        }
+    };
+    const handleCopyRoomLink = () => {
+        const roomLink = `https://cinemate-lavarel.vercel.app/room/${roomId}`;
+
+        // Copy to clipboard
+        navigator.clipboard.writeText(roomLink)
+            .then(() => {
+                // Show the confirmation modal
+                setShowCopyModal(true);
+
+                // Hide it after 2 seconds
+                setTimeout(() => {
+                    setShowCopyModal(false);
+                }, 2000);
+            })
+            .catch((err) => {
+                console.error('Failed to copy link: ', err);
+                // Handle error if needed
+            });
+    };
     // Hàm xử lý tin nhắn chat
     const handleChatMessage = (receivedMessage) => {
         console.log('Handling chat message:', receivedMessage);
@@ -474,7 +519,7 @@ const ChatRoom = () => {
         localStorage.setItem(`videoQueue_${roomId}`, JSON.stringify(updatedQueue));
 
         // Gửi thông báo
-        setSuccessMessage(`Đã thêm "${newQueueItem.title}" vào hàng chờ`);
+        setSuccessMessage(`Add "${newQueueItem.title}" to queue`);
         setShowSuccessModal(true);
         setTimeout(() => {
             setShowSuccessModal(false);
@@ -1016,7 +1061,11 @@ const ChatRoom = () => {
                                 destination: `/exchange/chat.exchange/room.${roomId}`,
                                 body: JSON.stringify(joinMessage),
                             });
-
+                            if (currentUser.username === roomData.owner_username) {
+                                setTimeout(() => {
+                                    sendRoomLinkMessage();
+                                }, 1000); // Pequeño retraso para asegurar que el mensaje de unión se muestre primero
+                            }
                             // Xử lý phát video nếu có thông tin từ URL và là chủ phòng
                             if (isCurrentUserOwner && urlVideoId) {
                                 // Phát video từ URL ngay lập tức nếu là chủ phòng
@@ -1652,6 +1701,25 @@ const ChatRoom = () => {
                                         </li>
                                     );
                                 }
+                                if (message.isRoomLink) {
+                                    return (
+                                        <li key={index} className="message-item system-notification">
+                                            <div className="system-message-container">
+                                                <div className="message-avatar">
+                                                    <img src={avtUrl} alt="Avatar" />
+                                                </div>
+                                                <div className="message-content room-link-message">
+                                                    <div className="room-link-text">{message.content}</div>
+                                                    <button className="copy-link-button" onClick={handleCopyRoomLink} title="Copy room link">
+                                                        <svg className="copy-icon" viewBox="0 0 24 24" width="16" height="16">
+                                                            <path d="M16 1H4C2.9 1 2 1.9 2 3V17H4V3H16V1ZM19 5H8C6.9 5 6 5.9 6 7V21C6 22.1 6.9 23 8 23H19C20.1 23 21 22.1 21 21V7C21 5.9 20.1 5 19 5ZM19 21H8V7H19V21Z" />
+                                                        </svg>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </li>
+                                    );
+                                }
 
                                 return (
                                     <li key={index} className={`message-item ${isSender ? "sent" : "received"}`}>
@@ -1749,9 +1817,16 @@ const ChatRoom = () => {
                             </button>
                         </div>
                     )}
-
+                    <div className="voice-chat-overlay">
+                        <VoiceChat
+                            roomId={roomId}
+                            stompClient={stompClientRef.current}
+                            currentUser={currentUser}
+                        />
+                    </div>
                     {/* Input chat */}
                     <div className="chat-input-container">
+                       
                         <input
                             className="chat-input"
                             type="text"
@@ -1767,13 +1842,46 @@ const ChatRoom = () => {
                             placeholder="Chat"
                         />
 
-                        <label htmlFor="imageUpload" style={{ cursor: 'pointer' }}>
-                            <img
-                                src="https://i.imgur.com/CqCdOHG.png"
-                                alt="Upload Icon"
-                                style={{ width: '30px', height: '30px', marginLeft: '10px' }}
-                            />
-                        </label>
+                        {/* Các nút chức năng khác */}
+                        <div className="chat-actionns">
+                            {/* Nút tag người dùng (@) */}
+                            <button className="actionn-button">
+                                <svg className="actionn-icon" viewBox="0 0 24 24">
+                                    <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M12,8.39C13.57,9.4 15.42,10 17.42,10C18.2,10 18.95,9.91 19.67,9.74C19.88,10.45 20,11.21 20,12C20,16.41 16.41,20 12,20C9,20 6.39,18.34 5,15.89L6.61,14V16A1,1 0 0,0 7.61,17A1,1 0 0,0 8.61,16V13A1,1 0 0,0 7.61,12H6.61L5,10.39C5.68,8.93 6.5,7.5 8.07,6.54C8.57,7.38 10.12,8.39 12,8.39M12,6.5C11.5,6.5 11,6.27 10.61,5.88C10.5,5.75 10.5,5.75 10.5,5.75L12.97,5.75C12.97,5.75 12.97,5.75 12.85,5.88C12.5,6.27 12,6.5 12,6.5Z" />
+                                </svg>
+                            </button>
+
+                            {/* Nút emoji */}
+                            <button className="actionn-button">
+                                <svg className="actionn-icon" viewBox="0 0 24 24">
+                                    <path d="M12,2C6.48,2 2,6.48 2,12C2,17.52 6.48,22 12,22C17.52,22 22,17.52 22,12C22,6.48 17.52,2 12,2M7,9.5C7,8.67 7.67,8 8.5,8C9.33,8 10,8.67 10,9.5C10,10.33 9.33,11 8.5,11C7.67,11 7,10.33 7,9.5M12,17.23C10.25,17.23 8.71,16.5 7.81,15.42L9.23,14C9.68,14.72 10.75,15.23 12,15.23C13.25,15.23 14.32,14.72 14.77,14L16.19,15.42C15.29,16.5 13.75,17.23 12,17.23M15.5,11C14.67,11 14,10.33 14,9.5C14,8.67 14.67,8 15.5,8C16.33,8 17,8.67 17,9.5C17,10.33 16.33,11 15.5,11Z" />
+                                </svg>
+                            </button>
+
+                            {/* Nút GIF */}
+                            <button className="actionn-button">
+                                <span style={{ color: 'white', fontSize: '16px', fontWeight: 'bold' }}>GIF</span>
+                            </button>
+
+                            {/* Nút upload ảnh */}
+                            <label htmlFor="imageUpload" className="actionn-button">
+                                <svg className="actionn-icon" viewBox="0 0 24 24">
+                                    <path d="M4,4H7L9,2H15L17,4H20A2,2 0 0,1 22,6V18A2,2 0 0,1 20,20H4A2,2 0 0,1 2,18V6A2,2 0 0,1 4,4M12,7A5,5 0 0,0 7,12A5,5 0 0,0 12,17A5,5 0 0,0 17,12A5,5 0 0,0 12,7M12,9A3,3 0 0,1 15,12A3,3 0 0,1 12,15A3,3 0 0,1 9,12A3,3 0 0,1 12,9Z" />
+                                </svg>
+                            </label>
+
+                            {/* Nút share */}
+                            <button
+                                className="actionn-button"
+                                onClick={handleCopyRoomLink}
+                            >
+                                <svg className="actionn-icon" viewBox="0 0 24 24">
+                                    <path d="M18,16.08C17.24,16.08 16.56,16.38 16.04,16.85L8.91,12.7C8.96,12.47 9,12.24 9,12C9,11.76 8.96,11.53 8.91,11.3L15.96,7.19C16.5,7.69 17.21,8 18,8A3,3 0 0,0 21,5A3,3 0 0,0 18,2A3,3 0 0,0 15,5C15,5.24 15.04,5.47 15.09,5.7L8.04,9.81C7.5,9.31 6.79,9 6,9A3,3 0 0,0 3,12A3,3 0 0,0 6,15C6.79,15 7.5,14.69 8.04,14.19L15.16,18.34C15.11,18.55 15.08,18.77 15.08,19C15.08,20.61 16.39,21.91 18,21.91C19.61,21.91 20.92,20.61 20.92,19A2.92,2.92 0 0,0 18,16.08Z" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        {/* Input ẩn cho upload ảnh */}
                         <input
                             id="imageUpload"
                             type="file"
@@ -1784,7 +1892,12 @@ const ChatRoom = () => {
                     </div>
 
                     {/* Thông báo kết nối */}
-                    {!connected && <p className="connection-status">Đang kết nối đến máy chủ chat...</p>}
+                   
+                    {showCopyModal && (
+                        <div className="success-modal">
+                            <p>Shareable Link Copied to Clipboard</p>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
