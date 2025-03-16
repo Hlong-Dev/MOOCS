@@ -1,12 +1,12 @@
 ﻿// src/components/Settings.js
 import React, { useState, useRef, useContext, useEffect } from 'react';
-import { AuthContext } from '../context/AuthContext';
+
 import { Link, useNavigate } from 'react-router-dom';
-import '../Setting2.css';
+import './Settings.css';
 
 const Settings = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const { user } = useContext(AuthContext);
+ 
     const sidebarRef = useRef(null);
     const navigate = useNavigate();
     // State để theo dõi panel nào đang mở
@@ -162,34 +162,10 @@ const Settings = () => {
 
     return (
         <>
-            <div className="animated-background">
-                <div className="blur-circles">
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                    <div className="blur-circle"></div>
-                </div>
-                <div className="blur-overlay"></div>
-            </div>
-
-            {/* Header - Tương tự trang Home */}
-            <header className="header">
-                <div className="top-bar">
-                    <div className="menu-icon" onClick={toggleSidebar}>
-                        <span>&#9776;</span>
-                    </div>
-                    <div className="logo">
-                        <img src="https://i.imgur.com/Mwphh0y.png" alt="CineMate" />
-                    </div>
-                </div>
-                <div className="divider"></div>
-            </header>
+            
 
             {/* Nội dung trang cài đặt */}
-            <div className="settings-content">
+            <div className="settings-contentt">
                 <div className="settings-tabs">
                     <div
                         className={`settings-tab ${activeTab === 'rave' ? 'active' : ''}`}
@@ -801,84 +777,7 @@ const Settings = () => {
 
             {/* Sidebar - Giống trang Home */}
             {isSidebarOpen && <div className="sidebar-overlay"></div>}
-            <nav ref={sidebarRef} className={`sidebar ${isSidebarOpen ? 'open' : ''}`}>
-                <div className="sidebar-content">
-                    <div className="sidebar-section">
-                        <Link to="/" className="sidebar-item">
-                            <i className="fas fa-globe"></i>
-                            <span>CineMate</span>
-                        </Link>
-                        <Link to="/friends" className="sidebar-item">
-                            <i className="fas fa-user-friends"></i>
-                            <span>Friends</span>
-                        </Link>
-                        <Link to="/account" className="sidebar-item">
-                            <i className="fas fa-user"></i>
-                            <span>My Account</span>
-                        </Link>
-                        <Link to="/connections" className="sidebar-item">
-                            <i className="fas fa-network-wired"></i>
-                            <span>Connections</span>
-                        </Link>
-                        <Link to="/settings" className="sidebar-item active">
-                            <i className="fas fa-cog"></i>
-                            <span>App Settings</span>
-                        </Link>
-                    </div>
-
-                    <div className="sidebar-section">
-                        {user ? (
-                            <div className="sidebar-item" onClick={() => {
-                                localStorage.removeItem('token');
-                                navigate('/login');
-                                window.location.reload();
-                            }}>
-                                <i className="fas fa-sign-out-alt"></i>
-                                <span>Log Out</span>
-                            </div>
-                        ) : (
-                            <Link to="/login" className="sidebar-item">
-                                <i className="fas fa-sign-in-alt"></i>
-                                <span>Login</span>
-                            </Link>
-                        )}
-                    </div>
-
-                    <div className="sidebar-section">
-                        <a href="https://cinemate.io" target="_blank" rel="noopener noreferrer" className="sidebar-item">
-                            <i className="fas fa-r"></i>
-                            <span>CineMate.io</span>
-                        </a>
-                        <a href="https://instagram.com/getcinemateapp" target="_blank" rel="noopener noreferrer" className="sidebar-item">
-                            <i className="fab fa-instagram"></i>
-                            <span>@getcinemateapp</span>
-                        </a>
-                        <a href="https://twitter.com/cineapp" target="_blank" rel="noopener noreferrer" className="sidebar-item">
-                            <i className="fab fa-twitter"></i>
-                            <span>@cineapp</span>
-                        </a>
-                        <a href="https://facebook.com/Getcinemate" target="_blank" rel="noopener noreferrer" className="sidebar-item">
-                            <i className="fab fa-facebook-f"></i>
-                            <span>@Getcinemate</span>
-                        </a>
-                        <a href="https://tiktok.com/@cineapp" target="_blank" rel="noopener noreferrer" className="sidebar-item">
-                            <i className="fab fa-tiktok"></i>
-                            <span>@cineapp</span>
-                        </a>
-                        <Link to="/shop" className="sidebar-item">
-                            <i className="fas fa-tshirt"></i>
-                            <span>Shop</span>
-                        </Link>
-                    </div>
-
-                    <div className="sidebar-footer">
-                        <div className="version-info">
-                            <span>Cinemate v.1.5.2.62 Open Beta</span>
-                            <span>Copyright ©️ 2024–2025 Apple Inc. All rights reserved.</span>
-                        </div>
-                    </div>
-                </div>
-            </nav>
+          
         </>
     );
 };

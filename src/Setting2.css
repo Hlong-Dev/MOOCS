@@ -47,9 +47,9 @@
 /* src/Settings.css */
 
 /* Layout chung của trang */
-.settings-contentt {
+.settings-content {
     position: relative;
-  
+    top: 80px;
     padding: 0 20px 20px;
     color: white;
 }
@@ -94,12 +94,12 @@
 
 /* Container panel cài đặt */
 .settings-panel {
- /*   background-color: rgba(25, 25, 35, 0.8);
+    /*   background-color: rgba(25, 25, 35, 0.8);
     backdrop-filter: blur(10px);
     border-radius: 16px;
     overflow: hidden;*/
     min-height: 400px;
-   /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);*/
+    /* box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);*/
     padding: 20px;
 }
 
@@ -426,7 +426,7 @@ input:checked + .toggle-slider {
     }
 
 .rave-settings-list {
-   /* background-color: rgba(40, 40, 55, 0.7);*/
+    /* background-color: rgba(40, 40, 55, 0.7);*/
     border-radius: 15px;
     padding: 10px 20px;
     /*box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);*/
@@ -438,11 +438,11 @@ input:checked + .toggle-slider {
 
 /* Menu tùy chọn cho cài đặt */
 .setting-options {
-  /*  background-color: rgba(30, 30, 45, 0.95);*/
+    /*  background-color: rgba(30, 30, 45, 0.95);*/
     padding: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
-   /* border-top: 1px solid rgba(255, 255, 255, 0.1);*/
+    /* border-top: 1px solid rgba(255, 255, 255, 0.1);*/
 }
 
     .setting-options.expanded {

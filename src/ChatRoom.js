@@ -14,6 +14,7 @@ import VideoEndScreen from './components/VideoEndScreen';
 import VideoBackgroundEffect from './VideoBackgroundEffect';
 import RoomList from './RoomList';
 import VoiceChat from './components/VoiceChat';
+import Settings from './Settings';
 window.stompClientGlobal = null;
 
 const ChatRoom = () => {
@@ -58,8 +59,19 @@ const ChatRoom = () => {
     const [isInitialized, setIsInitialized] = useState(false);
     const [showRoomList, setShowRoomList] = useState(false);
     const [showCopyModal, setShowCopyModal] = useState(false);
+    const [showSettings, setShowSettings] = useState(false);
     // Tạo refs để theo dõi tin nhắn đã gửi (tránh duplicate)
     const sentMessagesRef = useRef(new Set());
+    const handleSettingsClick = () => {
+        setShowSettings(!showSettings);
+
+        // Close other modals/panels when opening settings
+        if (!showSettings) {
+            setShowVideoList(false);
+            setShowQueueModal(false);
+            setShowRoomList(false);
+        }
+    };
     const handleRoomListClick = () => {
         const newShowRoomList = !showRoomList;
         setShowRoomList(newShowRoomList);
@@ -67,6 +79,7 @@ const ChatRoom = () => {
         // Đóng các modal khác khi mở danh sách phòng
         if (newShowRoomList) {
             setShowVideoList(false);
+            setShowSettings(false);
             setShowQueueModal(false);
         }
     };
@@ -77,6 +90,7 @@ const ChatRoom = () => {
         // If we're opening the queue modal, close the video list
         if (newShowQueueModal) {
             setShowVideoList(false);
+            setShowSettings(false);
             setShowRoomList(false);
         }
     };
@@ -1490,6 +1504,7 @@ const ChatRoom = () => {
         if (newShowVideoList) {
             setShowQueueModal(false);
             setShowRoomList(false);
+            setShowSettings(false);
         }
     };
 
@@ -1511,6 +1526,7 @@ const ChatRoom = () => {
                 showCountdown={showCountdown}
                 countdown={countdown}
                 onRoomListClick={handleRoomListClick}
+                onSettingClick={handleSettingsClick}
             />
 
             <div className="main-content">
@@ -1519,7 +1535,8 @@ const ChatRoom = () => {
 
                 <div className={`video-section 
     ${showVideoList ? 'with-list' : ''} 
-    ${showRoomList ? 'minimized-room-list' : ''}`}>
+    ${showRoomList ? 'minimized-room-list' : ''}
+    ${showSettings ? 'with-settings' : ''}`}>
                     {showEndScreen ? (
                         <VideoEndScreen
                             videoQueue={videoQueue}
@@ -1570,7 +1587,9 @@ const ChatRoom = () => {
                                     onProgress={handleProgress}
                                     onSeeking={handleSeeking}
                                     onSeeked={handleSeeked}
-                                    className={`react-player ${isOwner ? 'owner' : ''} ${showRoomList ? 'minimized-player' : ''}`}
+                                        className={`react-player ${isOwner ? 'owner' : ''} 
+    ${showRoomList ? 'minimized-player' : ''} 
+    ${showSettings ? 'minimized-player' : ''}`}
                                     playing={isPlaying}
                                     width="100%"
                                     height="100%"
@@ -1609,50 +1628,101 @@ const ChatRoom = () => {
                                         <RoomList />
                                     </div>
                                 )}
+                                {showSettings && (
+                                    <div className="settings-overlay">
+                                        <Settings onClose={() => setShowSettings(false)} />
+                                    </div>
+                                )}
                             {showVideoList && (
-                                <div className="grid-container">
-                                    {youtubeResults.length > 0 && youtubeResults.map((video) => (
-                                        <div
-                                            key={video.id.videoId}
-                                            className="video-cardd"
-                                            onClick={() => addToQueue(video, true)}
-                                            style={{ cursor: 'pointer' }}
-                                        >
-                                            <img
-                                                src={video.snippet.thumbnails.default.url}
-                                                alt={video.snippet.title}
-                                                className="thumbnail"
-                                            />
-                                            <div className="video-info">
-                                                <p className="video-title">{video.snippet.title}</p>
-                                                <span className="video-duration">Add to Queue</span>
+                                    <div className="glass-room-list">
+                                        {/* YouTube Results */}
+                                        {youtubeResults.length > 0 && youtubeResults.map((video) => (
+                                            <div
+                                                key={video.id.videoId}
+                                                className="glass-room-card"
+                                                onClick={() => addToQueue(video, true)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                <div className="glass-room-content">
+                                                    <div className="glass-room-thumbnail">
+                                                        <img
+                                                            src={video.snippet.thumbnails.medium.url}
+                                                            alt={video.snippet.title}
+                                                            className="glass-thumbnail-img"
+                                                        />
+                                                        <div className="glass-thumbnail-overlay">
+                                                            <h3 className="glass-video-title-overlay">
+                                                                {video.snippet.title}
+                                                            </h3>
+                                                        </div>
+                                                        <div className="glass-play-icon">
+                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M8 5V19L19 12L8 5Z" fill="white" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div className="glass-room-details">
+                                                        <div className="glass-room-name">
+                                                            {video.snippet.channelTitle || 'YouTube Video'}
+                                                        </div>
+                                                        <div className="glass-room-status">
+                                                            Add to Queue
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                    {videoList.map((video, index) => (
-                                        <div
-                                            className={`video-cardd ${!isOwner ? 'disabled-card' : ''}`}
-                                            key={index}
-                                            onClick={() => playVideo(video)}
-                                            style={{ cursor: isOwner ? 'pointer' : 'not-allowed', opacity: isOwner ? 1 : 0.6 }}
-                                            title={isOwner ? 'Click to play video' : 'Bạn không có quyền chọn video'}
-                                        >
-                                            <img
-                                                src={`https://colkidclub-hutech.id.vn/api/video/thumbnail/${encodeURIComponent(video.title.replace('.mp4', '.jpg'))}`}
-                                                alt={`Thumbnail of ${video.title}`}
-                                                crossOrigin="anonymous"
-                                                className="thumbnail"
-                                                onError={(e) => {
-                                                    e.target.src = 'https://via.placeholder.com/150';
-                                                }}
-                                            />
-                                            <div className="video-info">
-                                                <p className="video-title">{video.title}</p>
-                                                <span className="video-duration">{video.duration}</span>
+                                        ))}
+
+                                        {/* Local Video List */}
+                                        {videoList && videoList.length > 0 && videoList.map((video, index) => (
+                                            <div
+                                                className={`glass-room-card ${!isOwner ? 'disabled-card' : ''}`}
+                                                key={index}
+                                                onClick={() => playVideo(video)}
+                                                style={{ cursor: isOwner ? 'pointer' : 'not-allowed', opacity: isOwner ? 1 : 0.6 }}
+                                                title={isOwner ? 'Click to play video' : 'Bạn không có quyền chọn video'}
+                                            >
+                                                <div className="glass-room-content">
+                                                    <div className="glass-room-thumbnail">
+                                                        <img
+                                                            src={`https://colkidclub-hutech.id.vn/api/video/thumbnail/${encodeURIComponent(video.title.replace('.mp4', '.jpg'))}`}
+                                                            alt={`Thumbnail of ${video.title}`}
+                                                            crossOrigin="anonymous"
+                                                            className="glass-thumbnail-img"
+                                                            onError={(e) => {
+                                                                e.target.src = 'https://via.placeholder.com/150';
+                                                            }}
+                                                        />
+                                                        <div className="glass-thumbnail-overlay">
+                                                            <h3 className="glass-video-title-overlay">
+                                                                {video.title}
+                                                            </h3>
+                                                        </div>
+                                                        <div className="glass-play-icon">
+                                                            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                                <path d="M8 5V19L19 12L8 5Z" fill="white" />
+                                                            </svg>
+                                                        </div>
+                                                    </div>
+                                                    <div className="glass-room-details">
+                                                        <div className="glass-room-name">
+                                                            Server Video
+                                                        </div>
+                                                        <div className="glass-room-status">
+                                                            {video.duration || 'Duration unknown'}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+
+                                        {/* Show message when no videos available */}
+                                        {(!videoList || videoList.length === 0) && youtubeResults.length === 0 && (
+                                            <div className="no-videos-message">
+                                                <p>No videos available. Try searching for YouTube videos.</p>
+                                            </div>
+                                        )}
+                                    </div>
                             )}
                         </>
                     )}
@@ -1899,6 +1969,7 @@ const ChatRoom = () => {
                         </div>
                     )}
                 </div>
+
             </div>
         </div>
     );

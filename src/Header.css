@@ -92,6 +92,7 @@
     }
 /* Panel danh sách người dùng */
 .user-list {
+    height: calc(100vh - 136px);
     position: fixed;
     right: 0;
     top: 60px; /* Căn chỉnh panel bắt đầu ngay dưới header */
@@ -131,8 +132,8 @@
 }
 
 .user-avatar {
-    width: 40px;
-    height: 40px;
+    width: 60px !important;
+    height: 60px !important;
     border-radius: 50%;
     margin-right: 10px;
 }

@@ -844,7 +844,32 @@ body iframe[src*="youtube.com"] {
     /* Đảm bảo không ảnh hưởng đến layout chat */
     height: auto;
 }
+/* Styling for video section when settings are shown */
+.video-section.with-settings {
+    /* Ensure it doesn't affect the chat layout */
+    height: auto;
+}
 
+    /* Styling for the ReactPlayer when settings are shown */
+    .video-section.with-settings .react-player {
+        position: fixed;
+        top: 70px; /* Space from the top to avoid header overlap */
+        right: 20px;
+        width: 400px !important;
+        height: 225px !important;
+        z-index: 1000;
+        background: #000;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    }
+
+/* Add a media query for smaller screens */
+@media (max-width: 768px) {
+    .video-section.with-settings .react-player {
+        width: 300px !important;
+        height: 169px !important;
+    }
+}
 
 .chat-actionns {
     display: flex;

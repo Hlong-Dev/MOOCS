@@ -6,7 +6,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import '../Header.css';
 import { getUserFromToken } from '../utils/jwtUtils';
 
-const Header = ({ usersInRoom, onSearchClick, onQueueClick, showCountdown, countdown, onRoomListClick }) => {
+const Header = ({ usersInRoom, onSearchClick, onQueueClick, showCountdown, countdown, onRoomListClick, onSettingClick }) => {
     // ... => {
     const { roomId } = useParams(); // Lấy roomId từ URL
     const [showPopup, setShowPopup] = useState(false);
@@ -123,7 +123,7 @@ const Header = ({ usersInRoom, onSearchClick, onQueueClick, showCountdown, count
                 <div className="item" onClick={onRoomListClick}>
                     <FontAwesomeIcon icon={faBars} className="icon" />
                 </div>
-                <div className="item">
+                <div className="item" onClick={onSettingClick}>
                     <FontAwesomeIcon icon={faCog} className="icon" />
                 </div>
                 <div className="item" onClick={onSearchClick}>
