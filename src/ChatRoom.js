@@ -122,7 +122,7 @@ const ChatRoom = () => {
 
         if (stompClientRef.current && stompClientRef.current.connected &&
             currentUser.username === ownerUsernameRef.current) {
-            const roomLink = `https://cinemate-lavarel.vercel.app/room/${roomId}`;
+            const roomLink = `https://www.cinemate.website/room/${roomId}`;
 
             const linkMessage = {
                 sender: 'System',
@@ -142,7 +142,7 @@ const ChatRoom = () => {
         }
     };
     const handleCopyRoomLink = () => {
-        const roomLink = `https://cinemate-lavarel.vercel.app/room/${roomId}`;
+        const roomLink = `https://www.cinemate.website/room/${roomId}`;
 
         // Copy to clipboard
         navigator.clipboard.writeText(roomLink)
