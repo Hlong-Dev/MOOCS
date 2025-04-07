@@ -5,9 +5,9 @@
     --glass-border: rgba(176, 176, 176, 0.2);
     --glass-shadow: rgba(0, 0, 0, 0.25);
     --glass-highlight: rgba(176, 176, 176, 0.15);
-    --luxury-accent: #7d6aff; /* Primary accent color */
+
     --luxury-accent-secondary: #ffb56a; /* Secondary accent color */
-    --luxury-accent-dark: #6452d9;
+    --luxury-accent-dark: #8a8a8a;
     --text-color: rgba(255, 255, 255, 0.95);
     --secondary-text: rgba(255, 255, 255, 0.7);
     --success-color: #6bf178;
