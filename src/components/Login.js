@@ -49,7 +49,7 @@ const Login = () => {
     return (
         <div className="login-container">
             <div className="login-box">
-                <img src="https://i.imgur.com/Rp89NPj.png" alt="Logo" className="login-logo" /> {/* Thay logo-url bằng đường dẫn của logo */}
+                <img src="https://i.imgur.com/Mwphh0y.png" alt="Logo" className="login-logo" /> {/* Thay logo-url bằng đường dẫn của logo */}
                 <h2>Sign-In to watch with friends</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 <form onSubmit={handleSubmit} className="login-form">

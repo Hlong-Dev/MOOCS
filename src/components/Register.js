@@ -42,7 +42,7 @@ const Register = () => {
     return (
         <div className="login-container">
             <div className="login-box">
-                <img src="https://i.imgur.com/Rp89NPj.png" alt="Logo" className="login-logo" />
+                <img src="https://i.imgur.com/Mwphh0y.png" alt="Logo" className="login-logo" />
                 <h2>Sign Up to watch with friends</h2>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 {successMessage && <p style={{ color: 'green' }}>{successMessage}</p>}
