@@ -27,6 +27,16 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
+    "test:selenium": "mocha tests/selenium/*.test.js",
+    "test:login": "mocha tests/selenium/login.test.js",
+    "test:register": "mocha tests/selenium/register.test.js",
+    "test:login-po": "mocha tests/selenium/login-po.test.js",
+    "test:create-room": "mocha tests/selenium/create-room.test.js",
+    "test:network-failure": "mocha tests/selenium/create-room-network-failure.test.js",
+    "test:chat": "mocha tests/selenium/chat.test.js",
+    "test:video-sync": "mocha tests/selenium/video-sync.test.js",
+    "test:all": "node tests/selenium/runTests.js",
+    "test:headless": "cross-env HEADLESS=true node tests/selenium/runTests.js",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
@@ -50,5 +60,12 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "https://seeker-young-traveller-statutes.trycloudflare.com"
+  "proxy": "https://seeker-young-traveller-statutes.trycloudflare.com",
+  "devDependencies": {
+    "chai": "^4.3.7",
+    "chromedriver": "^134.0.0",
+    "cross-env": "^7.0.3",
+    "mocha": "^11.1.0",
+    "selenium-webdriver": "^4.30.0"
+  }
 }

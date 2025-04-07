@@ -1,13 +1,16 @@
 {
   "ExpandedNodes": [
     "",
-    "\\public",
     "\\src",
-    "\\src\\api",
-    "\\src\\components",
     "\\src\\context",
-    "\\src\\utils"
+    "\\src\\utils",
+    "\\tests",
+    "\\tests\\screenshots",
+    "\\tests\\selenium",
+    "\\tests\\selenium\\pages",
+    "\\tests\\selenium\\utils",
+    "\\tests\\test-assets"
   ],
-  "SelectedNode": "\\src\\VoiceChat.css",
+  "SelectedNode": "\\tests\\selenium\\video-sync.test.js",
   "PreviewInSolutionExplorer": false
 }

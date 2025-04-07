@@ -1,0 +1,21 @@
+
+
+  Login Page Tests (Page Object Pattern)
+    1) "before all" hook for "TC_LOGIN_001: Should login successfully with valid credentials"
+
+
+  0 passing (1s)
+  1 failing
+
+  1) Login Page Tests (Page Object Pattern)
+       "before all" hook for "TC_LOGIN_001: Should login successfully with valid credentials":
+     SessionNotCreatedError: session not created: This version of ChromeDriver only supports Chrome version 135
+Current browser version is 134.0.6998.178 with binary path C:\Program Files\Google\Chrome\Application\chrome.exe
+      at Object.throwDecodedError (node_modules\selenium-webdriver\lib\error.js:521:15)
+      at parseHttpResponse (node_modules\selenium-webdriver\lib\http.js:524:13)
+      at Executor.execute (node_modules\selenium-webdriver\lib\http.js:456:28)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+
+
+

@@ -1,0 +1,24 @@
+
+
+  Registration Page Tests
+    1) "before each" hook for "TC_REGISTER_001: Should register successfully with valid information"
+
+
+  0 passing (6s)
+  1 failing
+
+  1) Registration Page Tests
+       "before each" hook for "TC_REGISTER_001: Should register successfully with valid information":
+     WebDriverError: unknown error: net::ERR_CONNECTION_REFUSED
+  (Session info: chrome=134.0.6998.178)
+      at Object.throwDecodedError (node_modules\selenium-webdriver\lib\error.js:521:15)
+      at parseHttpResponse (node_modules\selenium-webdriver\lib\http.js:524:13)
+      at Executor.execute (node_modules\selenium-webdriver\lib\http.js:456:28)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+      at async Driver.execute (node_modules\selenium-webdriver\lib\webdriver.js:745:17)
+      at async TestSetup.goToPage (tests\selenium\testSetup.js:19:9)
+      at async Context.<anonymous> (tests\selenium\register.test.js:21:9)
+
+
+
+

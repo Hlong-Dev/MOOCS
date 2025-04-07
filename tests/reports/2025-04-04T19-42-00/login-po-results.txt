@@ -1,0 +1,66 @@
+
+
+  Login Page Tests (Page Object Pattern)
+    1) TC_LOGIN_001: Should login successfully with valid credentials
+    2) TC_LOGIN_002: Should show error for invalid username format
+    3) TC_LOGIN_003: Should show error for unregistered username
+    4) TC_LOGIN_004: Should show error for incorrect password
+    ✔ TC_LOGIN_005: Should validate empty username field (314ms)
+    ✔ TC_LOGIN_006: Should validate empty password field (300ms)
+    ✔ Should navigate back to home page when clicking back button (216ms)
+
+
+  3 passing (8s)
+  4 failing
+
+  1) Login Page Tests (Page Object Pattern)
+       TC_LOGIN_001: Should login successfully with valid credentials:
+
+      AssertionError: expected 'http://localhost:3000/login' to equal 'http://localhost:3000/'
+      + expected - actual
+
+      -http://localhost:3000/login
+      +http://localhost:3000/
+      
+      at Context.<anonymous> (tests\selenium\login-po.test.js:39:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  2) Login Page Tests (Page Object Pattern)
+       TC_LOGIN_002: Should show error for invalid username format:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (tests\selenium\login-po.test.js:48:37)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  3) Login Page Tests (Page Object Pattern)
+       TC_LOGIN_003: Should show error for unregistered username:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (tests\selenium\login-po.test.js:57:37)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+  4) Login Page Tests (Page Object Pattern)
+       TC_LOGIN_004: Should show error for incorrect password:
+
+      AssertionError: expected false to be true
+      + expected - actual
+
+      -false
+      +true
+      
+      at Context.<anonymous> (tests\selenium\login-po.test.js:66:37)
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+
+
+

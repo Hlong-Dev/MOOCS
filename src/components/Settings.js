@@ -816,9 +816,9 @@ const Settings = () => {
                             <i className="fas fa-user"></i>
                             <span>My Account</span>
                         </Link>
-                        <Link to="/connections" className="sidebar-item">
-                            <i className="fas fa-network-wired"></i>
-                            <span>Connections</span>
+                        <Link to="/premium" className="sidebar-item">
+                            <i className="fas fa-crown"></i>
+                            <span>CineMate Premium</span>
                         </Link>
                         <Link to="/settings" className="sidebar-item active">
                             <i className="fas fa-cog"></i>

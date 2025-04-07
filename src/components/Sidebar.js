@@ -53,10 +53,10 @@ const Sidebar = ({ isOpen, onClose }) => {
                                 <User className="w-6 h-6 mr-3" />
                                 <span>My Account</span>
                             </a>
-                            <a href="#connections" className="flex items-center px-4 py-3 hover:bg-gray-800">
-                                <Network className="w-6 h-6 mr-3" />
-                                <span>Connections</span>
-                            </a>
+                            <Link to="/premium" className="sidebar-item">
+                                <i className="fas fa-crown"></i>
+                                <span>CineMate Premium</span>
+                            </Link>
                             <a href="#settings" className="flex items-center px-4 py-3 hover:bg-gray-800">
                                 <Settings className="w-6 h-6 mr-3" />
                                 <span>App Settings</span>

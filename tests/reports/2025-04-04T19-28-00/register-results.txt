@@ -1,0 +1,14 @@
+
+
+  Registration Page Tests
+    ✔ TC_REGISTER_001: Should register successfully with valid information (2468ms)
+    ✔ TC_REGISTER_002: Should show error for existing username (1499ms)
+    ✔ TC_REGISTER_003: Should validate email format (493ms)
+Password complexity error: Registration failed. Please try again.
+    ✔ TC_REGISTER_004: Should handle password complexity requirements (1720ms)
+    ✔ Should navigate back to home page when clicking back button (206ms)
+
+
+  5 passing (10s)
+
+

@@ -1,0 +1,24 @@
+
+
+  Registration Page Tests
+    1) TC_REGISTER_001: Should register successfully with valid information
+    ✔ TC_REGISTER_002: Should show error for existing username (1578ms)
+    ✔ TC_REGISTER_003: Should validate email format (579ms)
+Password complexity error: Registration failed. Please try again.
+    ✔ TC_REGISTER_004: Should handle password complexity requirements (1701ms)
+    ✔ Should navigate back to home page when clicking back button (209ms)
+
+
+  4 passing (19s)
+  1 failing
+
+  1) Registration Page Tests
+       TC_REGISTER_001: Should register successfully with valid information:
+     TimeoutError: Waiting for element to be located By(css selector, p[style*="color: green"])
+Wait timed out after 10068ms
+      at C:\Users\hlongday\frontendexpress\node_modules\selenium-webdriver\lib\webdriver.js:929:22
+      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+
+
+

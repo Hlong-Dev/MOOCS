@@ -1,0 +1,12 @@
+
+
+ Exception during run: Error [ERR_REQUIRE_ESM]: require() of ES Module C:\Users\hlongday\frontendexpress\node_modules\chai\chai.js from C:\Users\hlongday\frontendexpress\tests\selenium\register.test.js not supported.
+Instead change the require of chai.js in C:\Users\hlongday\frontendexpress\tests\selenium\register.test.js to a dynamic import() which is available in all CommonJS modules.
+    at Object.<anonymous> (C:\Users\hlongday\frontendexpress\tests\selenium\register.test.js:3:20)
+    at async formattedImport (C:\Users\hlongday\frontendexpress\node_modules\mocha\lib\nodejs\esm-utils.js:9:14)
+    at async exports.requireOrImport (C:\Users\hlongday\frontendexpress\node_modules\mocha\lib\nodejs\esm-utils.js:42:28)
+    at async exports.loadFilesAsync (C:\Users\hlongday\frontendexpress\node_modules\mocha\lib\nodejs\esm-utils.js:100:20)
+    at async singleRun (C:\Users\hlongday\frontendexpress\node_modules\mocha\lib\cli\run-helpers.js:162:3)
+    at async exports.handler (C:\Users\hlongday\frontendexpress\node_modules\mocha\lib\cli\run.js:375:5) {
+  code: 'ERR_REQUIRE_ESM'
+}

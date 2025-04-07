@@ -9,9 +9,11 @@ import '../Home.css';
 
 const Home = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const { user } = useContext(AuthContext);
     const sidebarRef = useRef(null);
     const navigate = useNavigate();
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
@@ -34,13 +36,42 @@ const Home = () => {
         };
     }, [isSidebarOpen]);
 
+    // Tự động ẩn thông báo lỗi sau một khoảng thời gian
+    useEffect(() => {
+        if (errorMessage) {
+            const timer = setTimeout(() => {
+                setErrorMessage('');
+            }, 5000);
+            return () => clearTimeout(timer);
+        }
+    }, [errorMessage]);
+
     const toggleSidebar = () => {
         setIsSidebarOpen(!isSidebarOpen);
+    };
+
+    // Hàm hiển thị thông báo lỗi
+    const showErrorMessage = (message) => {
+        setErrorMessage(message);
     };
 
     const createRoomWithVideo = async (videoId, videoTitle) => {
         try {
             const token = localStorage.getItem('token');
+
+            // Kiểm tra xem token có tồn tại không
+            if (!token) {
+                // Người dùng chưa đăng nhập, chuyển hướng đến trang đăng nhập
+                navigate('/login');
+                return;
+            }
+
+            // Kiểm tra kết nối mạng
+            if (!navigator.onLine) {
+                showErrorMessage("Không thể tạo phòng. Vui lòng kiểm tra kết nối mạng và thử lại.");
+                return;
+            }
+
             const tokenPayload = JSON.parse(atob(token.split('.')[1]));
             const username = tokenPayload.sub;
 
@@ -64,15 +95,30 @@ const Home = () => {
                 navigate(`/room/${newRoom.id}?videoId=${videoId}&autoplay=true`);
             } else {
                 console.error("Failed to create room");
+                showErrorMessage("Không thể tạo phòng. Vui lòng thử lại sau.");
             }
         } catch (error) {
             console.error("Error creating room:", error);
+            if (!navigator.onLine || error.message.includes('network') || error.message.includes('fetch')) {
+                // Hiển thị thông báo lỗi mạng
+                showErrorMessage("Không thể tạo phòng. Vui lòng kiểm tra kết nối mạng và thử lại.");
+            } else {
+                // Hiển thị thông báo lỗi chung
+                showErrorMessage("Đã xảy ra lỗi khi tạo phòng. Vui lòng thử lại sau.");
+            }
         }
     };
 
     const createRoom = async () => {
         try {
             const token = localStorage.getItem('token');
+
+            // Kiểm tra token
+            if (!token) {
+                navigate('/login');
+                return;
+            }
+
             const tokenPayload = JSON.parse(atob(token.split('.')[1]));
             const username = tokenPayload.sub;
 
@@ -86,7 +132,6 @@ const Home = () => {
                     username: username,
                     name: `Phòng của ${username}`,
                     thumbnail: "https://i.imgur.com/6SqA0B8.png",
-
                 })
             });
 
@@ -95,9 +140,11 @@ const Home = () => {
                 navigate(`/room/${newRoom.id}`);
             } else {
                 console.error("Failed to create room");
+                showErrorMessage("Không thể tạo phòng. Vui lòng thử lại sau.");
             }
         } catch (error) {
             console.error("Error creating room:", error);
+            showErrorMessage("Đã xảy ra lỗi khi tạo phòng. Vui lòng thử lại sau.");
         }
     };
 
@@ -127,6 +174,7 @@ const Home = () => {
             console.error('Error fetching YouTube results:', error);
             setIsLoading(false);
             setImagesLoaded(0);
+            showErrorMessage("Không thể tải video. Vui lòng kiểm tra kết nối mạng và thử lại.");
         }
     };
 
@@ -195,6 +243,14 @@ const Home = () => {
                 </div>
                 <div className="blur-overlay"></div>
             </div>
+
+            {/* Hiển thị thông báo lỗi */}
+            {errorMessage && (
+                <div className="error-message">
+                    {errorMessage}
+                </div>
+            )}
+
             <header className="header">
                 <div className="top-bar">
                     <div className="menu-icon" onClick={toggleSidebar}>
@@ -318,9 +374,9 @@ const Home = () => {
                             <i className="fas fa-user"></i>
                             <span>My Account</span>
                         </Link>
-                        <Link to="/connections" className="sidebar-item">
-                            <i className="fas fa-network-wired"></i>
-                            <span>Connections</span>
+                        <Link to="/premium" className="sidebar-item">
+                            <i className="fas fa-crown"></i>
+                            <span>CineMate Premium</span>
                         </Link>
                         <Link to="/settings" className="sidebar-item">
                             <i className="fas fa-cog"></i>
