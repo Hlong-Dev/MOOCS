@@ -152,7 +152,7 @@ const Home = () => {
     const [youtubeResults, setYoutubeResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [imagesLoaded, setImagesLoaded] = useState(0);
-    const API_KEY = 'AIzaSyD9hNv29hep7MhOqBdpeh21HFBBfSxCTXY';
+    const API_KEY = 'AIzaSyBb4Gm3vXJTfvmwdmSPHSSPjFmUJe3SIFs';
 
     // Thêm function search YouTube
     const searchYoutubeVideos = async (term) => {
