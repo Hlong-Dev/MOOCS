@@ -1,4 +1,4 @@
-﻿// src/components/Account.js
+﻿ // src/components/Account.js
 import React, { useState, useRef, useContext, useEffect } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import { Link, useNavigate } from 'react-router-dom';

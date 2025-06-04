@@ -267,7 +267,7 @@ const Home = () => {
                     <i className="fas fa-search search-icon"></i>
                     <input
                         type="text"
-                        placeholder="search video, series, or film..."
+                        placeholder="search moocs"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                     />

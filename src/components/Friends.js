@@ -172,7 +172,7 @@ const Friends = () => {
                         <span>&#9776;</span>
                     </div>
                     <div className="logo">
-                        <img src="https://i.imgur.com/Mwphh0y.png" alt="CineMate" />
+                        <img src="Images/k.png" alt="YouTube" />
                     </div>
                 </div>
                 <div className="divider"></div>
