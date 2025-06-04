@@ -160,7 +160,7 @@ const Header = ({ usersInRoom, onSearchClick, onQueueClick, showCountdown, count
                             </svg>
                         </div>
                     ) : (
-                        <img src="https://i.imgur.com/Mwphh0y.png" alt="Cinemate" />
+                       <img src="/Images/k.png" alt="YouTube" />
                     )}
                 </div>
 

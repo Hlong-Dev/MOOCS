@@ -256,8 +256,8 @@ const Home = () => {
                     <div className="menu-icon" onClick={toggleSidebar}>
                         <span>&#9776;</span>
                     </div>
-                    <div className="logo">
-                        <img src="https://i.imgur.com/Mwphh0y.png" alt="YouTube" />
+                    <div className="logoo">
+                          <img src="Images/k.png" alt="YouTube" />
                     </div>
                 </div>
 
@@ -311,35 +311,35 @@ const Home = () => {
             {!searchTerm && (
                 <div className="services">
                     <div className="service-item">
-                        <img src="https://i.imgur.com/Q1iIpAE.png" alt="YouTube" />
+                        <img src="Images/udemy.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/xn6Ehfv.png" alt="Twitch" />
+                         <img src="Images/khan.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/Vf6tfih.png" alt="Netflix" />
+                          <img src="Images/c.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/yN245me.png" alt="Disney+" />
+                          <img src="Images/e.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/zgsS7Of.png" alt="Prime Video" />
+                        <img src="Images/udemy.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/axFodMO.png" alt="Playlist" />
+                         <img src="Images/khan.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/gNSGsSN.png" alt="tubi" />
+                          <img src="Images/c.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/MEXsqoF.png" alt="gg" />
+                          <img src="Images/e.png" alt="YouTube" />
                     </div>
                     <div className="service-item">
-                        <img src="https://i.imgur.com/QMVPZjU.png" alt="gg drive" className="white-icon" />
-                    </div>
-                    <div className="service-item">
-                        <img src="https://i.imgur.com/s2O07An.png" alt="Playlist" />
-                    </div>
+    <img src="Images/udemy.png" alt="YouTube" />
+</div>
+<div className="service-item">
+     <img src="Images/khan.png" alt="YouTube" />
+</div>
                 </div>
             )}
 
